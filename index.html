@@ -160,7 +160,7 @@
   <div class="container is-max-desktop">
     <div class="hero-body has-text-centered">
       <img src="static/images/overview.png" alt="Teaser Image" style="width: 100%; height: auto;">
-      <h2 class="subtitle has-text-centered">
+       <h2 class="subtitle" style="text-align: justify;">
         Overview of HIPPo. Given a video consisting of RGB-D frames, Grounding DINO \cite{grounding} is first applied to segment the object based on a prompt. Next, the proposed HIPPo Dreamer, built on a multiview Diffusion Model and a 3D reconstruction foundation model, generates a 3D mesh of the object from the first detected frame in a few seconds. Then, the diffusion prior mesh is provided to the pose estimation network to estimate the 6D pose in real time. Meanwhile, the mesh optimization module monitors viewpoint changes through a predefined viewpoint sphere and triggers mesh optimization when the viewpoint varies dramatically. The module then replaces the diffusion prior with more reliable appearance and geometry from online measurements.
       </h2>
     </div>
