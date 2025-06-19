@@ -235,30 +235,44 @@
 </section>
 
 
-<!-- Coming Soon Section -->
-<section class="hero is-fullheight is-flex is-align-items-center is-justify-content-center">
-  <div class="container has-text-centered">
-    <h1 class="title is-size-1 has-text-weight-bold">
-      More Results
-    </h1>
-  </div>
-</section>
-<!-- End Coming Soon Section -->
   
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
       <video poster="" id="tree" autoplay controls muted loop height="100%">
-        <source src="static/videos/fireex.mp4" type="video/mp4">
+        <source src="static/videos/Hippo Demo-1.mp4" type="video/mp4">
       </video>
       <h2 class="subtitle has-text-centered has-text-weight-bold" style="font-size: 2.5rem; margin-top: 1rem;">
-        Fire Extinguisher
+       Thanks to the utilization of the image-to-3D prior, HIPPo demonstrates robust zero-shot ability on unseen objects.
       </h2>
     </div>
   </div>
 </section>
 
+<div style="border: 1px solid #ccc; padding: 1em; border-radius: 8px; max-width: 800px; background-color: #f9f9f9; font-family: sans-serif;">
+  <strong>Citation:</strong>
+  <pre id="citation-text" style="white-space: pre-wrap; font-family: monospace; background-color: #fff; padding: 0.5em; border-radius: 4px; border: 1px solid #ddd;">
+Yibo Liu, Zhaodong Jiang, Binbin Xu, Guile Wu, Yuan Ren, Tongtong Cao, Bingbing Liu, Rui Heng Yang, Amir Rasouli, and Jinjun Shan. 
+"HIPPo: Harnessing Image-to-3D Priors for Model-free Zero-shot 6D Pose Estimation." 
+IEEE Robotics and Automation Letters (RA-L), Early Access, 2025. 
+DOI: 10.1109/LRA.2025.XXXXXXX
+  </pre>
+  <button onclick="copyCitation()" style="margin-top: 0.5em; padding: 0.4em 0.8em; font-size: 0.9em; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer;">
+    📋 Copy Citation
+  </button>
+</div>
 
+<script>
+  function copyCitation() {
+    const text = document.getElementById('citation-text').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Citation copied to clipboard!');
+    }).catch(err => {
+      alert('Failed to copy citation.');
+      console.error(err);
+    });
+  }
+</script>
   
 
 <!-- Image carousel -->
