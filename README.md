@@ -18,7 +18,7 @@ HIPPo is a training-free approach. In other words, you only need to download the
     <tr>
         <th>Grounded SAM</th>
         <th>Segmentation</th>
-        <th>[link](https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth)</th>
+       <th><a href="https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth">swint</a></th>
     </tr>
   
    
