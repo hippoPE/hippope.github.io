@@ -18,11 +18,31 @@ HIPPo is a training-free approach. In other words, you only need to download the
     <tr>
         <th>Grounded SAM</th>
         <th>Segmentation</th>
-       <th><a href="https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth">swint</a></th>
+       <th><a href="https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth">Swint</a></th>
     </tr>
-  
-   
+    <tr>
+        <th>Wonder3D</th>
+        <th>Multi-view Generation</th>
+       <th><a href="https://github.com/xxlong0/Wonder3D?tab=readme-ov-file">GitHub</a></th>
+    </tr>
+    <tr>
+        <th>MASt3R</th>
+        <th>3D Model Reconstruction</th>
+       <th><a href="https://download.europe.naverlabs.com/ComputerVision/MASt3R/MASt3R_ViTLarge_BaseDecoder_512_catmlpdpt_metric.pth">ViT-Large</a></th>
+    </tr>
+     <tr>
+        <th>FoundationPose</th>
+        <th>Object Tracking</th>
+       <th><a href="https://drive.google.com/drive/folders/1DFezOAD0oD1BblsXVxqDsl8fj0qzB82i?usp=sharing">FP</a></th>
+    </tr>
+      <tr>
+        <th>InstantMesh</th>
+        <th>Multi-view Generation+3D Model Reconstruction</th>
+       <th><a href="https://github.com/TencentARC/InstantMesh">GithHub</a></th>
+    </tr>
 </table>
+
+
 ## Acknowledgments
 Parts of this project page were adopted from the [Nerfies](https://nerfies.github.io/) page.
 
