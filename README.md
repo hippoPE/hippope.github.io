@@ -41,6 +41,7 @@ HIPPo is a training-free approach. In other words, you only need to download the
        <th><a href="https://github.com/TencentARC/InstantMesh">GitHub</a></th>
     </tr>
 </table>
+#Step 1: Object Segmentation
 
 
 ## Acknowledgments
