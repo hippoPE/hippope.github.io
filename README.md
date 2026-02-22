@@ -43,6 +43,13 @@ HIPPo is a training-free approach. In other words, you only need to download the
 </table>
 
 # Step 1: Object Segmentation
+<img width="672" height="589" alt="dreamer-1" src="https://github.com/user-attachments/assets/37e70d21-7bdd-4a23-a5c9-b247eab9d619" />
+
+# Step 2: Multi-view Generation
+<img width="565" height="589" alt="dreamer-2" src="https://github.com/user-attachments/assets/81fca8dd-c87c-4237-bec4-47ef23e0e718" />
+
+# Step 3: Denoising and Scaling
+<img width="1242" height="891" alt="dreamer" src="https://github.com/user-attachments/assets/904632e4-2274-401c-936d-400bbcac2d62" />
 
 
 ## Acknowledgments
