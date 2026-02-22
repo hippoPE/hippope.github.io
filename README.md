@@ -36,9 +36,9 @@ HIPPo is a training-free approach. In other words, you only need to download the
        <th><a href="https://drive.google.com/drive/folders/1DFezOAD0oD1BblsXVxqDsl8fj0qzB82i?usp=sharing">FP</a></th>
     </tr>
       <tr>
-        <th>InstantMesh</th>
+        <th>InstantMesh (Alternative)</th>
         <th>Multi-view Generation+3D Model Reconstruction</th>
-       <th><a href="https://github.com/TencentARC/InstantMesh">GithHub</a></th>
+       <th><a href="https://github.com/TencentARC/InstantMesh">GitHub</a></th>
     </tr>
 </table>
 
