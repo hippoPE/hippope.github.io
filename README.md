@@ -202,6 +202,9 @@ pcd_filtered, ind = pcd.remove_statistical_outlier(
 )
 o3d.io.write_point_cloud("filtered.ply", pcd_filtered)
 ```
+# Step 3.5: Alternative Solution (Recommanded)
+Step 2 and Step 3 can be replaced by a one-stop solution: [InstantMesh](https://github.com/TencentARC/InstantMesh).
+Following this [demo](https://github.com/TencentARC/InstantMesh/blob/main/run.py), you can obtain a 3D model directly and instantly. A potential issue is that [Zero123++](https://github.com/SUDO-AI-3D/zero123plus) only generates multi-view images with fixed observing poses, which may pose a challenge for subsequent scale recovery. Despite this limitation, we still highly recommend using InstantMesh, as our framework involves substantial engineering effort, whereas InstantMesh allows you to jump directly to Steps 4 and 5.
 
 # Step 4: Scale Recovery
 Since the generated 3D model does not have a meaningful physical scale, we need to recover the scale using real depth measurements.
@@ -217,6 +220,60 @@ o3d.io.write_point_cloud(f"/workspace/gt.pcd",pp)
 ```
 The measured point cloud of the object is noisy. We need to apply SOR filtering to denoise it as well.<br>
 Now that we have the denoised measured and estimated point clouds, we can compute a scale factor and use it to recover the physical size of the reference model.
+```python
+import open3d as o3d
+import numpy as np
+
+def similarity_umeyama(A, B):
+    mu_A, mu_B = A.mean(0), B.mean(0)
+    AA, BB = A - mu_A, B - mu_B
+    U, S, Vt = np.linalg.svd(BB.T @ AA / len(A))
+    R = Vt.T @ U.T
+    if np.linalg.det(R) < 0:
+        Vt[-1] *= -1
+        R = Vt.T @ U.T
+    scale = S.sum() / np.var(BB, axis=0).sum()
+    t = mu_A - scale * R @ mu_B
+    T = np.eye(4)
+    T[:3,:3] = scale * R
+    T[:3,3] = t
+    return scale, T
+
+source = o3d.io.read_point_cloud("estimated.ply")
+target = o3d.io.read_point_cloud("measured.ply")
+
+A = np.asarray(target.points)
+B = np.asarray(source.points)
+
+scale, T = similarity_umeyama(A, B)
+print("scale:", scale)
+
+source.transform(T)
+
+reg = o3d.pipelines.registration.registration_icp(
+    source, target, 0.02, np.eye(4),
+    o3d.pipelines.registration.TransformationEstimationPointToPlane()
+)
+
+source.transform(reg.transformation)
+o3d.visualization.draw_geometries([source, target])
+```
+
+
+
+# Step 5: Tracking
+
+```python
+anchor_mesh = trimesh.load(obj_path)
+anchor_mesh = anchor_mesh.apply_scale(scale)
+self.pose_estimator.mesh = anchor_mesh
+self.pose_estimator.estimator.reset_object(
+model_pts = anchor_mesh.vertices,
+model_normals = anchor_mesh.vertex_normals,mesh=anchor_mesh)
+self.pose_estimator.tracked = False                
+obj_pose6d, extents = self.pose_estimator.inference(color_img, depth_img,
+mask_img, intrinsic_matrix)
+```
 ## Acknowledgments
 Parts of this project page were adopted from the [Nerfies](https://nerfies.github.io/) page.
 
