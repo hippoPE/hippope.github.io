@@ -262,7 +262,7 @@ o3d.visualization.draw_geometries([source, target])
 
 
 # Step 5: Tracking
-
+Then you may follow [FoundationPose Demo](https://github.com/NVlabs/FoundationPose/blob/main/run_demo.py) to track the 6D pose of the object. The idea is quite straightforward. When using the vanilla FP, you need to define the reference model first. Simply locate where the reference model is defined and replace it with the result from the above steps.
 ```python
 anchor_mesh = trimesh.load(obj_path)
 anchor_mesh = anchor_mesh.apply_scale(scale)
