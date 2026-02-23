@@ -149,8 +149,52 @@ images = pipeline(
 ```
 
 You may follow the [Usage of Wonder3D](https://github.com/xxlong0/Wonder3D).
+# Step 3: 3D Model Generation
+Now you have six views of the object. The next step is to generate a 3D model from them using MASt3R.
 
-# Step 3: Denoising and Scaling
+```python
+    lr1 = 0.07
+    lr2 = 0.014
+    niter1 = 300
+    images = load_images(image_list, size=512)
+    pairs = make_pairs(images, prefilter=None, symmetrize=True)
+    scene = sparse_global_alignment(image_list, pairs, cache_dir,
+                                    model, lr1=lr1, niter1=niter1, lr2=lr2, niter2=niter2, device=device,
+                                    opt_depth='depth' in optim_level, shared_intrinsics=shared_intrinsics,
+                                    matching_conf_thr=matching_conf_thr, depth_range=(filtered_mean)/1e3)
+    gradio_delete_cache=True
+    outdir = os.path.join(os.curdir, 'output')
+    os.makedirs(outdir, exist_ok=True)
+    outfile_name = tempfile.mktemp(suffix='_scene.glb', dir=outdir)
+    scene_state = SparseGAState(scene, gradio_delete_cache, cache_dir, outfile_name)
+
+    silent=False
+    min_conf_thr = 2.0
+    as_pointcloud = False
+    mask_sky = False
+    clean_depth = True
+    transparent_cams = True
+    cam_size = 0
+    TSDF_thresh = 0
+
+    obj_path =  f"/workspace/dust3r_outputs/{timestamp}.obj"
+    obj_pcd_path =  f"/workspace/dust3r_outputs_pcd/{timestamp}.pcd"
+    outfile = get_3D_model_from_scene(silent, scene_state, min_conf_thr, as_pointcloud, mask_sky,
+                                      clean_depth, transparent_cams, cam_size, TSDF_thresh,obj_path,obj_pcd_path)
+    scene_my = scene_state.sparse_ga
+    rgbimg = to_numpy(scene_my.imgs)
+    focals = scene_my.get_focals()
+    poses = scene_my.get_im_poses()
+```
+We modified the [get_3D_model_from_scene](https://github.com/naver/dust3r/blob/3cc8c88c413bb9e34c41db0e0eef99c2ee010b12/dust3r/demo.py#L110) to save the 3D model. <br>
+
+Also, remember to modify the [mask generation logic in MASt3R](https://github.com/naver/dust3r/blob/4c24a6ebf04809f2cfe59915e51779c8984aaa40/dust3r/cloud_opt/base_opt.py#L197). Otherwise, the background may be recognized as part of the object.
+<img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/120d019f-ed56-4b9a-995b-16ea37f5b60b" />
+Again, it is recommended to first follow the [MASt3R demo](https://github.com/naver/mast3r/blob/main/demo.py) to create a script that generates a 3D model from multiple images, and then gradually add these modifications to improve the results.
+
+
+
+# Step 4: Denoising and Scaling
 <img width="1242" height="891" alt="dreamer" src="https://github.com/user-attachments/assets/904632e4-2274-401c-936d-400bbcac2d62" />
 
 
