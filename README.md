@@ -95,8 +95,48 @@ cv2.imwrite(f"/workspace/masks/{timestamp}.png", mask_img)
 ```
 
 # Step 2: Multi-view Generation
-<img width="565" height="589" alt="dreamer-2" src="https://github.com/user-attachments/assets/81fca8dd-c87c-4237-bec4-47ef23e0e718" />
+<img width="265" height="289" alt="dreamer-2" src="https://github.com/user-attachments/assets/81fca8dd-c87c-4237-bec4-47ef23e0e718" /> <br>
+The goal of this step is to generate multi-view images. <br>
+```python
+bg_color = np.array([1., 1., 1.], dtype=np.float32)
 
+cond, _, _ = load_image(
+    f"/workspace/masked_img/{timestamp}.png",
+    bg_color,
+    masked_depth_img
+)
+
+cond = Image.fromarray((cond * 255).astype(np.uint8)[:, :, :3])
+cond = remove(cond)
+cond.save(f"/workspace/croped_imgs/{timestamp}.png")
+
+cv2.imwrite(f"/workspace/depth_img/{timestamp}.png", depth_img * 255)
+cv2.imwrite(f"/workspace/masked_depth_img/{timestamp}.png", masked_depth_img * 255)
+
+# Generate multi-view images
+images = pipeline(cond, num_inference_steps=20,
+                  output_type='pt', guidance_scale=1.0).images
+
+result = make_grid(images, nrow=6, ncol=2, padding=0, value_range=(0, 1))
+save_image(result, f"/workspace/wonder3d_results/{timestamp}.png")
+
+# Take prediction half
+bsz = images.shape[0] // 2
+images_pred = images[bsz:]
+
+# Create directories
+mast3r_dir = f"/workspace/mast3r_inputs/{timestamp}"
+mask_dir = f"/workspace/mask/{timestamp}"
+os.makedirs(mast3r_dir, exist_ok=True)
+os.makedirs(mask_dir, exist_ok=True)
+
+# Save + remove background directly
+for i in range(6):
+    img_np = (images_pred[i].permute(1, 2, 0).cpu().numpy() * 255).astype(np.uint8)
+    img_np = remove(img_np)
+    cv2.imwrite(f"{mast3r_dir}/{i}.png", img_np)
+
+```
 # Step 3: Denoising and Scaling
 <img width="1242" height="891" alt="dreamer" src="https://github.com/user-attachments/assets/904632e4-2274-401c-936d-400bbcac2d62" />
 
