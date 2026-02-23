@@ -189,15 +189,34 @@ Now you have six views of the object. The next step is to generate a 3D model fr
 We modified the [get_3D_model_from_scene](https://github.com/naver/dust3r/blob/3cc8c88c413bb9e34c41db0e0eef99c2ee010b12/dust3r/demo.py#L110) to save the 3D model. <br>
 
 Also, remember to modify the [mask generation logic in MASt3R](https://github.com/naver/dust3r/blob/4c24a6ebf04809f2cfe59915e51779c8984aaa40/dust3r/cloud_opt/base_opt.py#L197). Otherwise, the background may be recognized as part of the object.
-<img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/120d019f-ed56-4b9a-995b-16ea37f5b60b" />
-Again, it is recommended to first follow the [MASt3R demo](https://github.com/naver/mast3r/blob/main/demo.py) to create a script that generates a 3D model from multiple images, and then gradually add these modifications to improve the results.
+<img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/120d019f-ed56-4b9a-995b-16ea37f5b60b" /> <br>
+Again, it is recommended to first follow the [MASt3R demo](https://github.com/naver/mast3r/blob/main/demo.py) to create a script that generates a 3D model from multiple images, and then gradually add these modifications to improve the results.<br>
+The generate 3D model will be a 3D point cloud. Remember to apply the SOR filtering to denoise it.
+```python
+import open3d as o3d
+pcd = o3d.io.read_point_cloud("input.ply")
+#SOR filtering. Just an example. The hyperparameters do not indicate recommended values.
+pcd_filtered, ind = pcd.remove_statistical_outlier(
+    nb_neighbors=200,     # KNN
+    std_ratio=2.0        # alpha
+)
+o3d.io.write_point_cloud("filtered.ply", pcd_filtered)
+```
 
-
-
-# Step 4: Denoising and Scaling
-<img width="1242" height="891" alt="dreamer" src="https://github.com/user-attachments/assets/904632e4-2274-401c-936d-400bbcac2d62" />
-
-
+# Step 4: Scale Recovery
+Since the generated 3D model does not have a meaningful physical scale, we need to recover the scale using real depth measurements.
+<img width="560" height="400" alt="dreamer" src="https://github.com/user-attachments/assets/904632e4-2274-401c-936d-400bbcac2d62" />
+```python
+from submodules.FoundationPose.Utils import depth2xyzmap
+masked_depth_pc = depth2xyzmap(masked_depth_img,intrinsic_matrix)/1e3
+masked_depth_pc = masked_depth_pc.reshape(-1, 3)
+masked_depth_pc = masked_depth_pc[np.any(masked_depth_pc != [0, 0, 0], axis=1)]
+pp = o3d.geometry.PointCloud()
+pp.points = o3d.utility.Vector3dVector(masked_depth_pc)
+o3d.io.write_point_cloud(f"/workspace/gt.pcd",pp)
+```
+The measured point cloud of the object is noisy. We need to apply SOR filtering to denoise it as well.<br>
+Now that we have the denoised measured and estimated point clouds, we can compute a scale factor and use it to recover the physical size of the reference model.
 ## Acknowledgments
 Parts of this project page were adopted from the [Nerfies](https://nerfies.github.io/) page.
 
