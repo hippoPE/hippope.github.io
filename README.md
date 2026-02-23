@@ -274,6 +274,91 @@ self.pose_estimator.tracked = False
 obj_pose6d, extents = self.pose_estimator.inference(color_img, depth_img,
 mask_img, intrinsic_matrix)
 ```
+
+# Step 6: Mesh Update
+Once you finish Steps 1–5, you will have a framework that can estimate the 6D pose from the first glance at the object. The following commands define when to update the mesh.
+```python
+def sample_views_icosphere(n_views, subdivisions=None, radius=1):
+  if subdivisions is not None:
+    mesh = trimesh.creation.icosphere(subdivisions=subdivisions, radius=radius)
+  else:
+    subdivision = 1
+    while 1:
+      mesh = trimesh.creation.icosphere(subdivisions=subdivision, radius=radius)
+      if mesh.vertices.shape[0]>=n_views:
+        break
+      subdivision += 1
+  cam_in_obs = np.tile(np.eye(4)[None], (len(mesh.vertices),1,1))
+  cam_in_obs[:,:3,3] = mesh.vertices
+  up = np.array([0,0,1])
+  z_axis = -cam_in_obs[:,:3,3]  #(N,3)
+  z_axis /= np.linalg.norm(z_axis, axis=-1).reshape(-1,1)
+  x_axis = np.cross(up.reshape(1,3), z_axis)
+  invalid = (x_axis==0).all(axis=-1)
+  x_axis[invalid] = [1,0,0]
+  x_axis /= np.linalg.norm(x_axis, axis=-1).reshape(-1,1)
+  y_axis = np.cross(z_axis, x_axis)
+  y_axis /= np.linalg.norm(y_axis, axis=-1).reshape(-1,1)
+  cam_in_obs[:,:3,0] = x_axis
+  cam_in_obs[:,:3,1] = y_axis
+  cam_in_obs[:,:3,2] = z_axis
+  return cam_in_obs
+
+
+def cartesian_to_spherical(cartesian_point):
+    x, y, z = cartesian_point
+    r = np.sqrt(x**2 + y**2 + z**2)
+    theta = np.arccos(z / r)  # Polar angle
+    phi = np.arctan2(y, x)    # Azimuthal angle
+    return theta, phi
+
+def spherical_angle_difference(point1, point2):
+    # Convert Cartesian coordinates to spherical angles
+    theta1, phi1 = cartesian_to_spherical(point1)
+    theta2, phi2 = cartesian_to_spherical(point2)
+
+    # Calculate the angle difference using simple addition of deltas
+    delta_phi = abs(phi2 - phi1)
+    delta_theta = abs(theta2 - theta1)
+
+    # Sum of the angular differences
+    angle_distance = delta_phi + delta_theta
+    return angle_distance
+
+def check_keyframe_icosphere(query_cam, occupied, tree, key_frame_points, angle_threshold=0.1):
+    '''
+    @query_cam: (4,4) np array
+    @occupied: dict
+    @tree: KDTree
+    @angle_threshold: float (in radians)
+    '''
+    query_cam = query_cam[:3, 3]
+    dist, idx = tree.query(query_cam.reshape(1, -1), k=1)
+    closest_point = key_frame_points[idx][0]
+
+    # Compute the angular distance
+    angle_distance = spherical_angle_difference(query_cam, closest_point)
+
+    if angle_distance < angle_threshold:
+        closest_point_tuple = tuple(closest_point)
+        if closest_point_tuple in occupied:
+            return False
+        else:
+            occupied[closest_point_tuple] = True
+            return True
+    else:
+        print(f"Angle distance: {angle_distance} exceeds threshold: {angle_threshold}. Ignored.")
+        return False
+
+def generate_keyframe_icosphere(n_views, subdivisions=None, radius=1):
+  from scipy.spatial import KDTree
+  key_frame_points = sample_views_icosphere(n_views, subdivisions=subdivisions, radius=radius)[:,:3,3]
+  key_frame_pose = sample_views_icosphere(n_views, subdivisions=subdivisions, radius=radius)
+  occupied = {}
+  tree = KDTree(key_frame_points)
+  return tree, occupied, key_frame_points, key_frame_pose
+```
+
 ## Acknowledgments
 Parts of this project page were adopted from the [Nerfies](https://nerfies.github.io/) page.
 
