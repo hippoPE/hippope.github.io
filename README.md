@@ -87,6 +87,11 @@ masked_rgb_img = masked_img(rgb_img, mask_img)
 # 7. Apply mask to depth image
 # -------------------------------------------------
 masked_depth_img = depth_img * mask_raw
+
+timestamp = f"{self.cam.frame_count:06d}"
+# You do not need to save these images. These commands are only used to help you check the results at each step.
+cv2.imwrite(f"/workspace/masked_img/{timestamp}.png", dst)
+cv2.imwrite(f"/workspace/masks/{timestamp}.png", mask_img)
 ```
 
 # Step 2: Multi-view Generation
