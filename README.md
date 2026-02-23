@@ -137,6 +137,19 @@ for i in range(6):
     cv2.imwrite(f"{mast3r_dir}/{i}.png", img_np)
 
 ```
+To run the following command:
+
+```python
+images = pipeline(
+    cond,
+    num_inference_steps=20,
+    output_type='pt',
+    guidance_scale=1.0
+).images
+```
+
+You may follow the [Usage of Wonder3D](https://github.com/xxlong0/Wonder3D).
+
 # Step 3: Denoising and Scaling
 <img width="1242" height="891" alt="dreamer" src="https://github.com/user-attachments/assets/904632e4-2274-401c-936d-400bbcac2d62" />
 
