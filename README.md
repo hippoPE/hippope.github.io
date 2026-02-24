@@ -276,7 +276,7 @@ mask_img, intrinsic_matrix)
 ```
 
 # Step 6: Mesh Update
-Once you complete Steps 1–5, you will have a framework capable of estimating the 6D pose from the first glance at the object. If you wish to update the mesh based on new observations, the following commands specify when the mesh should be updated.
+Once you complete Steps 1–5, you will have a framework capable of estimating the 6D pose from the first glance at the object. If you wish to update the mesh based on new observations, the following commands specify when the mesh should be updated.<br>
 <img width="425" height="180" alt="sphere" src="https://github.com/user-attachments/assets/a341bf02-8edf-463a-9f64-b01a1519f72b" />
 ```python
 def sample_views_icosphere(n_views, subdivisions=None, radius=1):
