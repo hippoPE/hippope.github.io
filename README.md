@@ -137,7 +137,7 @@ for i in range(6):
     cv2.imwrite(f"{mast3r_dir}/{i}.png", img_np)
 
 ```
-To run the following command:
+To run the following command
 
 ```python
 images = pipeline(
