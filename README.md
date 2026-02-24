@@ -1,7 +1,7 @@
 # From the Author
 Hi there, I'm Yibo Liu. 
 
-~~I'm facing some uncontrollable challenges right now and don’t have the mood to update this repo. If I can get through this, I will try to complete the repo.~~
+~~I'm facing some uncontrollable challenges right now and don’t have the mood to update this repo. If I can get through this, I will try to complete the repo. Torching scientists is one of the most self-destructive things a country can do to itself.~~
 
 ~~Although I am still fighting against witch hunting, I will try to provide updates to this repository before April.~~
 
