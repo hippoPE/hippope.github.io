@@ -382,6 +382,11 @@ def transfer_color_and_position(source_pcd, target_pcd):
 ```
 This module can be replaced with more advanced alternatives, such as [VGGT SLAM 2.0](https://arxiv.org/abs/2601.19887).
 
-## Acknowledgments
+# Acknowledgments
+We would like to thank the authors for releasing the following projects:<br>
+[FoundationPose](https://github.com/NVlabs/FoundationPose)<br>
+[MASt3R](https://github.com/naver/mast3r)<br>
+[Wonder3D](https://github.com/xxlong0/Wonder3D)<br>
+[InstantMesh](https://github.com/TencentARC/InstantMesh)<br>
 Parts of this project page were adopted from the [Nerfies](https://nerfies.github.io/) page.
 
