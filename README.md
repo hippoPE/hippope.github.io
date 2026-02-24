@@ -276,7 +276,7 @@ mask_img, intrinsic_matrix)
 ```
 
 # Step 6: Mesh Update
-Once you finish Steps 1–5, you will have a framework that can estimate the 6D pose from the first glance at the object. If you are interested in updating the mesh based on new observations, the following commands define when to update the mesh.
+Once you complete Steps 1–5, you will have a framework capable of estimating the 6D pose from the first glance at the object. If you wish to update the mesh based on new observations, the following commands specify when the mesh should be updated.
 <img width="425" height="180" alt="sphere" src="https://github.com/user-attachments/assets/a341bf02-8edf-463a-9f64-b01a1519f72b" />
 ```python
 def sample_views_icosphere(n_views, subdivisions=None, radius=1):
@@ -359,6 +359,28 @@ def generate_keyframe_icosphere(n_views, subdivisions=None, radius=1):
   tree = KDTree(key_frame_points)
   return tree, occupied, key_frame_points, key_frame_pose
 ```
+Mesh updating can be formulated as an [object-level SLAM problem](https://bundlesdf.github.io/). The key distinction is that, through HIPPo Dreamer, we have access to a 3D prior of the object model. <br>
+In our current implementation, we use a colored point cloud representation, and the update logic is based on KD-Tree nearest-neighbor search followed by point replacement. <br>
+```python
+def transfer_color_and_position(source_pcd, target_pcd):
+
+    source_points = np.asarray(source_pcd.points)
+    target_points = np.asarray(target_pcd.points)
+    target_colors = np.asarray(target_pcd.colors)
+
+    # Create a KDTree for the source point cloud
+    source_kdtree = o3d.geometry.KDTreeFlann(source_pcd)
+
+    # Iterate over each point in the target point cloud
+    for i, target_point in enumerate(target_points):
+        [_, idx, _] = source_kdtree.search_knn_vector_3d(target_point, 1)  # 1 nearest neighbor
+        nearest_point_idx = idx[0]
+        # source_pcd.points[nearest_point_idx] =target_point # if geo is also wanted
+        source_pcd.colors[nearest_point_idx] =target_colors[i]
+
+    return source_pcd
+```
+This module can be replaced with more advanced alternatives, such as [VGGT SLAM 2.0](https://arxiv.org/abs/2601.19887).
 
 ## Acknowledgments
 Parts of this project page were adopted from the [Nerfies](https://nerfies.github.io/) page.
