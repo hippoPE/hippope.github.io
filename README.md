@@ -188,7 +188,7 @@ Now you have six views of the object. The next step is to generate a 3D model fr
 ```
 We modified the [get_3D_model_from_scene](https://github.com/naver/dust3r/blob/3cc8c88c413bb9e34c41db0e0eef99c2ee010b12/dust3r/demo.py#L110) to save the 3D model. <br>
 
-Also, remember to modify the [mask generation logic in MASt3R](https://github.com/naver/dust3r/blob/4c24a6ebf04809f2cfe59915e51779c8984aaa40/dust3r/cloud_opt/base_opt.py#L197). Otherwise, the background may be recognized as part of the object.
+Also, remember to modify the [mask generation logic in MASt3R](https://github.com/naver/dust3r/blob/4c24a6ebf04809f2cfe59915e51779c8984aaa40/dust3r/cloud_opt/base_opt.py#L197). Otherwise, the background may be recognized as part of the object.<br>
 <img width="400" height="250" alt="image" src="https://github.com/user-attachments/assets/120d019f-ed56-4b9a-995b-16ea37f5b60b" /> <br>
 Again, it is recommended to first follow the [MASt3R demo](https://github.com/naver/mast3r/blob/main/demo.py) to create a script that generates a 3D model from multiple images, and then gradually add these modifications to improve the results.<br>
 The generate 3D model will be a 3D point cloud. Remember to apply the SOR filtering to denoise it.
